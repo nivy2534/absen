@@ -1,1 +1,38 @@
+name: Update CSV
 
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # Run every 5 minutes
+
+jobs:
+  update-csv:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Run Update Script
+      run: |
+      function myFunction() {
+      var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+      var values = sheet.getDataRange().getValues();
+    
+      var csvContent = values.map(row => row.join(',')).join('\n');
+    
+      var folder = DriveApp.getFolderById('https://drive.google.com/drive/u/0/folders/1Gxw0Q_FRBwMctgK1DjLIxLDBK_uBCbtK'); # Replace with your Google Drive folder ID
+      var file = folder.createFile('responses.csv', csvContent, MimeType.CSV);
+    }
+
+
+        # Add your script to update the CSV file here
+        # For example, you could use wget or curl to download the latest CSV from Google Sheets
+        # Replace 'URL_OF_YOUR_GOOGLE_SHEETS_CSV' with the actual URL
+
+    - name: Commit and Push Changes
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add data.csv
+        git commit -m "Update CSV file"
+        git push
